@@ -34,15 +34,15 @@ public class Life
         }
     }
     
-    private static void measure (Worker w)
+    private static void measure (Class<? extends Worker> cw) throws Exception
     {
-        put (w, ACORN);
-
         int K = 10000;
-        System.out.printf ("%20s: time for %5d:", w.getClass ().getName (), K);
+        System.out.printf ("%20s: time for %5d:", cw.getName (), K);
         
         long t = 0;
         for (int n = 0; n < 3; n++) {
+            Worker w = cw.newInstance ();
+            put (w, ACORN);
             long t1 = System.currentTimeMillis ();
             for (int i = 0; i < K; i++)
                 w.step ();
@@ -56,7 +56,7 @@ public class Life
     private static void test (Worker w) throws Exception
     {
         test (new Hash_Reference(), w, 100);
-        measure (w.getClass ().newInstance ());
+        measure (w.getClass ());
     }
 
     public static void main (String [] args) throws Exception
